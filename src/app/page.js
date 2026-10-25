@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { ASYAM_DATA } from "@/data/asyam";
 
 const ACCENT = "#2563eb";
 const ACCENT_SOFT = "rgba(37,99,235,0.08)";
@@ -21,42 +22,13 @@ const INITIAL_MESSAGE = {
   time: null,
 };
 
-const PROJECTS = [
-  {
-    num: "01",
-    title: "Asyam AI Portfolio",
-    desc: "A personal portfolio with a Gemini-powered AI assistant. Built with Next.js, React, and API integration.",
-    tag: "Next.js · AI",
-  },
-  {
-    num: "02",
-    title: "Experiment Project",
-    desc: "Small experiments around web development and computer vision using Python and OpenCV.",
-    tag: "Python · CV",
-  },
-  {
-    num: "03",
-    title: "Coming Soon",
-    desc: "Still in progress. Every project is a chance to learn something new.",
-    tag: "In progress",
-  },
-];
-
-const TICKER_ITEMS = ["Think", "Build", "Experiment", "Learn", "Repeat"];
-
 const NOW_ITEMS = [
   { label: "Learning", value: "Python & Computer Vision" },
   { label: "Building", value: "Asyam AI Portfolio" },
-  { label: "Reading", value: "Docs, articles, and source code" },
   { label: "School", value: "SMP Negeri 3 Cepu" },
 ];
 
-const PRINCIPLES = [
-  { num: "01", title: "Stay curious", desc: "Ask questions and keep exploring." },
-  { num: "02", title: "Build to learn", desc: "Turn ideas into practical experiments." },
-  { num: "03", title: "Keep it useful", desc: "Focus on solving meaningful problems." },
-  { num: "04", title: "Improve steadily", desc: "Use feedback to get better over time." },
-];
+const TICKER_ITEMS = ["Think", "Build", "Experiment", "Learn", "Repeat"];
 
 function stripMarkdown(text) {
   if (!text) return "";
@@ -103,7 +75,6 @@ export default function Home() {
   const mounted = useRef(false);
   const copyTimer = useRef(null);
 
-  // Auto-scroll HANYA di dalam chat container — pakai "auto" di mobile
   useEffect(() => {
     if (!mounted.current) {
       mounted.current = true;
@@ -117,7 +88,6 @@ export default function Home() {
     return () => cancelAnimationFrame(raf);
   }, [messages, loading]);
 
-  // Live Jakarta time
   useEffect(() => {
     function tick() {
       try {
@@ -138,12 +108,10 @@ export default function Home() {
     return () => clearInterval(id);
   }, []);
 
-  // Focus input after loading
   useEffect(() => {
     if (!loading) inputRef.current?.focus({ preventScroll: true });
   }, [loading]);
 
-  // Deteksi scroll untuk header shadow
   useEffect(() => {
     function onScroll() {
       setScrolled(window.scrollY > 20);
@@ -153,7 +121,6 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Scroll reveal
   useEffect(() => {
     const els = document.querySelectorAll("[data-reveal]");
     if (!("IntersectionObserver" in window)) {
@@ -181,7 +148,6 @@ export default function Home() {
     return () => io.disconnect();
   }, []);
 
-  // Cleanup copy timer
   useEffect(() => {
     return () => {
       if (copyTimer.current) clearTimeout(copyTimer.current);
@@ -309,7 +275,7 @@ export default function Home() {
             Work
           </a>
           <a href="#ai" style={styles.navLink}>
-            Asyam AI
+            AI
           </a>
           <a href="#contact" style={styles.navLink}>
             Contact
@@ -328,36 +294,16 @@ export default function Home() {
             <div style={styles.heroText}>
               <p style={styles.eyebrow}>
                 <span style={styles.eyebrowDot} />
-                <span style={styles.eyebrowLine} />
                 Student developer · Indonesia
               </p>
               <h1 style={styles.heroTitle}>
                 Building things
                 <br />
-                that{" "}
-                <span style={styles.accentWrap}>
-                  matter
-                  <svg
-                    style={styles.underline}
-                    viewBox="0 0 120 8"
-                    preserveAspectRatio="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M2 6 Q 30 1, 60 4 T 118 3"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      fill="none"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </span>
-                .
+                that <span style={styles.accentText}>matter</span>.
               </h1>
               <p style={styles.heroDesc}>
                 I'm Asyam — I turn curiosity into experiments, projects, and
-                useful digital experiences. Focused on web development, AI, and
-                creative technology.
+                useful digital experiences.
               </p>
 
               <div style={styles.schoolRow}>
@@ -365,23 +311,19 @@ export default function Home() {
                   <Image
                     src="/images/smp3.png"
                     alt="SMP Negeri 3 Cepu logo"
-                    width={40}
-                    height={40}
+                    width={32}
+                    height={32}
                     style={styles.schoolLogo}
                   />
                 </div>
-                <div>
-                  <div style={styles.schoolLabel}>Currently studying at</div>
+                <div style={styles.schoolText}>
+                  <div style={styles.schoolLabel}>Studying at</div>
                   <div style={styles.schoolName}>SMP Negeri 3 Cepu</div>
                 </div>
               </div>
 
               <div style={styles.heroActions}>
-                <a
-                  href="#ai"
-                  style={styles.primaryBtn}
-                  className="primary-btn"
-                >
+                <a href="#ai" style={styles.primaryBtn} className="primary-btn">
                   Try Asyam AI <span style={styles.btnArrow}>↓</span>
                 </a>
                 <a
@@ -399,44 +341,22 @@ export default function Home() {
                 <Image
                   src="/images/asyam.png"
                   alt="Asyam Farrel Dzakwan portrait"
-                  width={260}
-                  height={320}
-                  sizes="(max-width: 720px) 220px, 260px"
+                  width={200}
+                  height={240}
+                  sizes="(max-width: 720px) 160px, 200px"
                   style={styles.heroImage}
                   priority
                 />
                 <span style={styles.cornerTL} />
                 <span style={styles.cornerBR} />
-                <span style={styles.imageBadge}>ASYAM · 2025</span>
               </div>
-              <div style={styles.heroImageMeta}>
-                <div style={styles.metaRow}>
-                  <span style={styles.metaKey}>
-                    <span style={styles.metaBullet}>●</span> Projects
-                  </span>
-                  <span style={styles.metaVal}>03</span>
-                </div>
-                <div style={styles.metaRow}>
-                  <span style={styles.metaKey}>
-                    <span style={styles.metaBullet}>○</span> Learning
-                  </span>
-                  <span style={styles.metaVal}>Python</span>
-                </div>
-                <div style={styles.metaRow}>
-                  <span style={styles.metaKey}>
-                    <span style={styles.metaBullet}>◐</span> Jakarta
-                  </span>
-                  <span style={{ ...styles.metaVal, color: ACCENT }}>
-                    {time}
-                  </span>
-                </div>
+              <div style={styles.metaRow}>
+                <span style={styles.metaKey}>Jakarta</span>
+                <span style={{ ...styles.metaVal, color: ACCENT }}>
+                  {time}
+                </span>
               </div>
             </div>
-          </div>
-
-          <div style={styles.scrollHint} aria-hidden="true">
-            <span>Scroll</span>
-            <span style={styles.scrollHintArrow}>↓</span>
           </div>
         </div>
 
@@ -446,7 +366,6 @@ export default function Home() {
               <div key={dup} style={styles.tickerGroup}>
                 {TICKER_ITEMS.map((item, i) => (
                   <span key={`${dup}-${i}`} style={styles.tickerItem}>
-                    <span style={styles.tickerDot}>●</span>
                     {item}
                     <span style={styles.tickerArrow}>↗</span>
                   </span>
@@ -464,7 +383,6 @@ export default function Home() {
             <span style={styles.sectionNum}>00</span>
             <h2 style={styles.sectionLabel}>Now</h2>
           </div>
-          <h3 style={styles.sectionTitle}>What I'm up to.</h3>
           <div style={styles.nowGrid}>
             {NOW_ITEMS.map((item) => (
               <div key={item.label} style={styles.nowCard}>
@@ -489,11 +407,7 @@ export default function Home() {
             one experiment at a time.
           </h3>
           <div style={styles.twoCol}>
-            <p style={styles.body}>
-              I'm Asyam, a student developer from Indonesia interested in how
-              technology can solve problems and make complex ideas easier to
-              understand.
-            </p>
+            <p style={styles.body}>{ASYAM_DATA.bio}</p>
             <p style={styles.body}>
               My projects help me learn beyond the classroom. I explore Python,
               web development, artificial intelligence, and computer vision by
@@ -506,18 +420,14 @@ export default function Home() {
               <Image
                 src="/images/smp3.png"
                 alt="SMP Negeri 3 Cepu logo"
-                width={48}
-                height={48}
+                width={40}
+                height={40}
                 style={styles.schoolLogo}
               />
             </div>
             <div>
               <div style={styles.aboutSchoolLabel}>Education</div>
               <div style={styles.aboutSchoolName}>SMP Negeri 3 Cepu</div>
-              <div style={styles.aboutSchoolDesc}>
-                Currently a student, learning through projects and experiments
-                outside the classroom.
-              </div>
             </div>
           </div>
         </div>
@@ -531,24 +441,22 @@ export default function Home() {
             <h2 style={styles.sectionLabel}>Selected work</h2>
           </div>
           <h3 style={styles.sectionTitle}>Things I'm building.</h3>
-          <p style={styles.sectionDesc}>
-            Projects, experiments, and ideas in progress — each one a chance to
-            learn something new.
-          </p>
 
           <div style={styles.projectList}>
-            {PROJECTS.map((p) => (
+            {ASYAM_DATA.projects.map((p, i) => (
               <article
-                key={p.num}
+                key={p.name}
                 style={styles.projectRow}
                 className="project-row"
               >
-                <span style={styles.projectNum}>{p.num}</span>
+                <span style={styles.projectNum}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 <div style={styles.projectBody}>
-                  <h4 style={styles.projectTitle}>{p.title}</h4>
+                  <h4 style={styles.projectTitle}>{p.name}</h4>
                   <p style={styles.projectDesc}>{p.desc}</p>
                 </div>
-                <span style={styles.projectTag}>{p.tag}</span>
+                <span style={styles.projectTag}>{p.status}</span>
               </article>
             ))}
           </div>
@@ -579,10 +487,6 @@ export default function Home() {
             <br />
             I'm <span style={styles.accentText}>here</span>.
           </h3>
-          <p style={styles.sectionDesc}>
-            My digital assistant, powered by Gemini API. Ask about the
-            portfolio, coding, or just chat — in any language.
-          </p>
 
           <div style={styles.chatCard}>
             <header style={styles.chatHeader}>
@@ -594,7 +498,7 @@ export default function Home() {
                     {loading ? (
                       <span style={{ color: ACCENT }}>Typing…</span>
                     ) : (
-                      "Online · ready to chat"
+                      "Online"
                     )}
                   </div>
                 </div>
@@ -777,88 +681,27 @@ export default function Home() {
             <span style={styles.sectionNum}>04</span>
             <h2 style={styles.sectionLabel}>Toolkit</h2>
           </div>
-          <h3 style={styles.sectionTitle}>
-            Tools I use.
-            <br />
-            Skills I'm growing.
-          </h3>
+          <h3 style={styles.sectionTitle}>Tools I use.</h3>
 
-          <div style={styles.toolkitGrid}>
-            <div style={styles.toolkitCard} className="toolkit-card">
-              <span style={styles.toolkitNum}>01 / 03</span>
-              <h4 style={styles.toolkitTitle}>Development</h4>
-              <p style={styles.toolkitDesc}>
-                Building interactive digital experiences.
-              </p>
-              <ul style={styles.tagList}>
-                <li style={styles.tag}>HTML & CSS</li>
-                <li style={styles.tag}>JavaScript</li>
-                <li style={styles.tag}>Next.js</li>
-                <li style={styles.tag}>Responsive</li>
-              </ul>
-            </div>
-            <div style={styles.toolkitCard} className="toolkit-card">
-              <span style={styles.toolkitNum}>02 / 03</span>
-              <h4 style={styles.toolkitTitle}>Programming</h4>
-              <p style={styles.toolkitDesc}>
-                Learning through practical experiments.
-              </p>
-              <ul style={styles.tagList}>
-                <li style={styles.tag}>Python</li>
-                <li style={styles.tag}>OpenCV</li>
-                <li style={styles.tag}>API Integration</li>
-              </ul>
-            </div>
-            <div style={styles.toolkitCard} className="toolkit-card">
-              <span style={styles.toolkitNum}>03 / 03</span>
-              <h4 style={styles.toolkitTitle}>Exploration</h4>
-              <p style={styles.toolkitDesc}>
-                Technologies I want to understand deeply.
-              </p>
-              <ul style={styles.tagList}>
-                <li style={styles.tag}>AI</li>
-                <li style={styles.tag}>Computer Vision</li>
-                <li style={styles.tag}>Creative Tech</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 05 PRINCIPLES ================= */}
-      <section style={styles.section}>
-        <div style={styles.sectionInner} className="section-inner" data-reveal>
-          <div style={styles.sectionHead}>
-            <span style={styles.sectionNum}>05</span>
-            <h2 style={styles.sectionLabel}>Principles</h2>
-          </div>
-          <h3 style={styles.sectionTitle}>
-            How I approach
-            <br />
-            the process.
-          </h3>
-
-          <div style={styles.principlesGrid}>
-            {PRINCIPLES.map((p) => (
-              <div key={p.num} style={styles.principleCard}>
-                <span style={styles.principleNum}>{p.num}</span>
-                <h4 style={styles.principleTitle}>{p.title}</h4>
-                <p style={styles.principleDesc}>{p.desc}</p>
-              </div>
+          <ul style={styles.tagList}>
+            {ASYAM_DATA.skills.map((s) => (
+              <li key={s} style={styles.tag}>
+                {s}
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
-      {/* ================= 06 CONTACT ================= */}
+      {/* ================= 05 CONTACT ================= */}
       <section id="contact" style={styles.section}>
         <div style={styles.sectionInner} className="section-inner" data-reveal>
           <div style={styles.sectionHead}>
-            <span style={styles.sectionNum}>06</span>
+            <span style={styles.sectionNum}>05</span>
             <h2 style={styles.sectionLabel}>Contact</h2>
           </div>
           <h3 style={styles.sectionTitle}>
-            Have an idea, a question,
+            Have an idea,
             <br />
             or something to learn together?
           </h3>
@@ -867,16 +710,16 @@ export default function Home() {
             <li style={styles.contactItem} className="contact-item">
               <span style={styles.contactKey}>Email</span>
               <a
-                href="mailto:farrelanakpintar@gmail.com"
+                href={`mailto:${ASYAM_DATA.contact.email}`}
                 style={styles.contactLink}
               >
-                farrelanakpintar@gmail.com ↗
+                {ASYAM_DATA.contact.email} ↗
               </a>
             </li>
             <li style={styles.contactItem} className="contact-item">
               <span style={styles.contactKey}>GitHub</span>
               <a
-                href="https://github.com/Farel886"
+                href={ASYAM_DATA.contact.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.contactLink}
@@ -887,7 +730,7 @@ export default function Home() {
             <li style={styles.contactItem} className="contact-item">
               <span style={styles.contactKey}>TikTok</span>
               <a
-                href="https://tiktok.com/@oscarlevha"
+                href={ASYAM_DATA.contact.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={styles.contactLink}
@@ -902,54 +745,6 @@ export default function Home() {
       {/* ================= FOOTER ================= */}
       <footer style={styles.footer}>
         <div style={styles.footerInner}>
-          <div style={styles.footerCol}>
-            <div style={styles.footerBrand}>
-              <span style={styles.brandMark}>A</span>
-              <span style={styles.brandName}>asyam.f</span>
-            </div>
-            <p style={styles.footerTagline}>
-              Student developer from Indonesia. Building things that matter.
-            </p>
-          </div>
-
-          <div style={styles.footerCol}>
-            <span style={styles.footerHeading}>Navigate</span>
-            <a href="#ai" style={styles.footerLink}>
-              Asyam AI
-            </a>
-            <a href="#contact" style={styles.footerLink}>
-              Contact
-            </a>
-          </div>
-
-          <div style={styles.footerCol}>
-            <span style={styles.footerHeading}>Elsewhere</span>
-            <a
-              href="https://github.com/Farel886"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={styles.footerLink}
-            >
-              GitHub
-            </a>
-            <a
-              href="https://tiktok.com/@oscarlevha"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={styles.footerLink}
-            >
-              TikTok
-            </a>
-            <a
-              href="mailto:farrelanakpintar@gmail.com"
-              style={styles.footerLink}
-            >
-              Email
-            </a>
-          </div>
-        </div>
-
-        <div style={styles.footerBottom}>
           <span style={styles.headerMono}>© 2025 Asyam Farrel Dzakwan</span>
           <span style={styles.headerMono}>
             Built with Next.js & Gemini API
@@ -997,13 +792,6 @@ export default function Home() {
         :global(.project-row) { transition: background 0.2s; }
         :global(.project-row:hover) { background: rgba(37,99,235,0.03); }
         :global(.project-row:hover h4) { color: #2563eb; }
-        :global(.toolkit-card) {
-          transition: border-color 0.2s, transform 0.2s;
-        }
-        :global(.toolkit-card:hover) {
-          border-color: rgba(37,99,235,0.35) !important;
-          transform: translateY(-2px);
-        }
         :global(.contact-item:hover a) { color: #2563eb; }
         :global(.primary-btn) { transition: transform 0.15s; }
         :global(.primary-btn:hover) { transform: translateY(-1px); }
@@ -1011,40 +799,33 @@ export default function Home() {
         :global(.secondary-btn:hover) { border-color: #2563eb !important; }
 
         @media (max-width: 720px) {
-          :global(h1) { font-size: 2rem !important; }
-          :global(h3) { font-size: 1.3rem !important; }
+          :global(h1) { font-size: 1.9rem !important; }
+          :global(h3) { font-size: 1.25rem !important; }
 
-          /* Hero jadi 1 kolom, foto di bawah teks */
           :global(.hero-grid) {
             grid-template-columns: 1fr !important;
-            gap: 2rem !important;
+            gap: 1.5rem !important;
           }
           :global(.hero-image-wrap) {
             width: 100% !important;
-            max-width: 280px !important;
+            max-width: 200px !important;
             margin: 0 auto !important;
             order: 0;
           }
           :global(.nav) { display: none !important; }
 
-          /* Chat: tinggi lebih kecil & scroll internal */
           :global(.chat-area) {
-            height: 50vh !important;
-            max-height: 340px !important;
+            height: 40vh !important;
+            max-height: 300px !important;
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
           }
 
-          /* Matikan smooth scroll global di HP (biar tidak "loncat") */
-          :global(html) {
-            scroll-behavior: auto !important;
-          }
+          :global(html) { scroll-behavior: auto !important; }
 
-          /* Section padding lebih kecil */
-          :global(.section-inner) { padding: 2.5rem 1.25rem !important; }
-          :global(.hero-inner) { padding: 2.5rem 1.25rem 0 !important; }
+          :global(.section-inner) { padding: 2rem 1.25rem !important; }
+          :global(.hero-inner) { padding: 2rem 1.25rem 0 !important; }
 
-          /* Input 16px biar iOS tidak zoom */
           :global(input) { font-size: 16px !important; }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -1073,7 +854,7 @@ const styles = {
     position: "fixed",
     inset: 0,
     backgroundImage:
-      "linear-gradient(to right, rgba(0,0,0,0.035) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.035) 1px, transparent 1px)",
+      "linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)",
     backgroundSize: "40px 40px",
     animation: "gridShift 20s linear infinite",
     pointerEvents: "none",
@@ -1085,47 +866,46 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "1.1rem 2rem",
+    padding: "0.9rem 1.5rem",
     borderBottom: "1px solid #e5e5e5",
     position: "sticky",
     top: 0,
-    background: "rgba(250,250,250,0.85)",
+    background: "rgba(250,250,250,0.9)",
     backdropFilter: "blur(10px)",
     WebkitBackdropFilter: "blur(10px)",
     zIndex: 10,
     transition: "border-color 0.2s, box-shadow 0.2s",
     gap: "1rem",
   },
-  brand: { display: "flex", alignItems: "center", gap: "0.6rem" },
+  brand: { display: "flex", alignItems: "center", gap: "0.5rem" },
   brandMark: {
-    width: 28,
-    height: 28,
+    width: 26,
+    height: 26,
     background: "#111111",
     color: "#ffffff",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontWeight: 700,
-    fontSize: "0.85rem",
+    fontSize: "0.8rem",
     borderRadius: 4,
   },
   brandName: {
-    fontSize: "0.82rem",
+    fontSize: "0.78rem",
     letterSpacing: "0.06em",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
     color: "#111111",
   },
-  nav: { display: "flex", alignItems: "center", gap: "1.25rem" },
+  nav: { display: "flex", alignItems: "center", gap: "1rem" },
   navLink: {
-    fontSize: "0.78rem",
+    fontSize: "0.75rem",
     color: "#555555",
     textDecoration: "none",
-    letterSpacing: "0.02em",
   },
-  headerRight: { display: "flex", alignItems: "center", gap: 8 },
+  headerRight: { display: "flex", alignItems: "center", gap: 6 },
   statusPulse: {
-    width: 8,
-    height: 8,
+    width: 7,
+    height: 7,
     borderRadius: "50%",
     background: ACCENT,
     display: "inline-block",
@@ -1133,7 +913,7 @@ const styles = {
     flexShrink: 0,
   },
   headerMono: {
-    fontSize: "0.7rem",
+    fontSize: "0.65rem",
     letterSpacing: "0.08em",
     textTransform: "uppercase",
     color: "#555555",
@@ -1144,28 +924,27 @@ const styles = {
   /* ---------- HERO ---------- */
   hero: { borderBottom: "1px solid #e5e5e5", position: "relative", zIndex: 1 },
   heroInner: {
-    maxWidth: 1100,
+    maxWidth: 960,
     margin: "0 auto",
-    padding: "4.5rem 2rem 0",
+    padding: "3.5rem 1.5rem 0",
   },
   heroGrid: {
     display: "grid",
     gridTemplateColumns: "minmax(0, 1fr) auto",
-    gap: "3rem",
+    gap: "2.5rem",
     alignItems: "start",
   },
   heroText: { minWidth: 0 },
   eyebrow: {
-    fontSize: "0.72rem",
+    fontSize: "0.68rem",
     color: "#666666",
-    margin: "0 0 1rem",
+    margin: "0 0 0.85rem",
     letterSpacing: "0.1em",
     textTransform: "uppercase",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
     display: "flex",
     alignItems: "center",
     gap: "0.5rem",
-    flexWrap: "wrap",
   },
   eyebrowDot: {
     width: 6,
@@ -1175,58 +954,36 @@ const styles = {
     display: "inline-block",
     animation: "pulseRing 2s infinite",
   },
-  eyebrowLine: {
-    display: "inline-block",
-    width: 24,
-    height: 1,
-    background: ACCENT,
-  },
   heroTitle: {
-    fontSize: "clamp(2.4rem, 6vw, 4.2rem)",
-    lineHeight: 1.05,
+    fontSize: "clamp(2rem, 5vw, 3.2rem)",
+    lineHeight: 1.1,
     fontWeight: 500,
-    letterSpacing: "-0.025em",
-    margin: "0 0 1.5rem",
+    letterSpacing: "-0.02em",
+    margin: "0 0 1.15rem",
     color: "#111111",
   },
   accentText: { color: ACCENT },
-  accentWrap: {
-    position: "relative",
-    display: "inline-block",
-    color: ACCENT,
-  },
-  underline: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: "-0.05em",
-    width: "100%",
-    height: "0.18em",
-    color: ACCENT,
-    opacity: 0.6,
-    pointerEvents: "none",
-  },
   heroDesc: {
-    fontSize: "1rem",
-    lineHeight: 1.7,
+    fontSize: "0.95rem",
+    lineHeight: 1.65,
     color: "#444444",
-    maxWidth: 540,
-    margin: "0 0 1.5rem",
+    maxWidth: 480,
+    margin: "0 0 1.25rem",
   },
   schoolRow: {
     display: "flex",
     alignItems: "center",
-    gap: "0.75rem",
-    padding: "0.7rem 0.9rem",
+    gap: "0.6rem",
+    padding: "0.5rem 0.7rem",
     border: "1px solid #e5e5e5",
     borderRadius: 6,
     background: "#ffffff",
-    maxWidth: 340,
-    marginBottom: "1.5rem",
+    maxWidth: 300,
+    marginBottom: "1.25rem",
   },
   schoolLogoWrap: {
-    width: 40,
-    height: 40,
+    width: 32,
+    height: 32,
     borderRadius: 4,
     overflow: "hidden",
     border: "1px solid #e5e5e5",
@@ -1242,29 +999,30 @@ const styles = {
     height: "100%",
     display: "block",
   },
+  schoolText: { minWidth: 0 },
   schoolLabel: {
-    fontSize: "0.65rem",
+    fontSize: "0.6rem",
     textTransform: "uppercase",
     letterSpacing: "0.08em",
     color: "#888888",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
   },
   schoolName: {
-    fontSize: "0.85rem",
+    fontSize: "0.8rem",
     fontWeight: 600,
     color: "#111111",
-    marginTop: 2,
+    marginTop: 1,
   },
-  heroActions: { display: "flex", flexWrap: "wrap", gap: "0.65rem" },
+  heroActions: { display: "flex", flexWrap: "wrap", gap: "0.5rem" },
   primaryBtn: {
     display: "inline-flex",
     alignItems: "center",
-    gap: 8,
-    padding: "0.7rem 1.15rem",
+    gap: 6,
+    padding: "0.6rem 1rem",
     background: "#111111",
     color: "#ffffff",
     textDecoration: "none",
-    fontSize: "0.82rem",
+    fontSize: "0.78rem",
     fontWeight: 500,
     borderRadius: 4,
     border: "1px solid #111111",
@@ -1273,11 +1031,11 @@ const styles = {
   secondaryBtn: {
     display: "inline-flex",
     alignItems: "center",
-    padding: "0.7rem 1.15rem",
+    padding: "0.6rem 1rem",
     background: "#ffffff",
     color: "#111111",
     textDecoration: "none",
-    fontSize: "0.82rem",
+    fontSize: "0.78rem",
     fontWeight: 500,
     borderRadius: 4,
     border: "1px solid #d4d4d4",
@@ -1285,15 +1043,15 @@ const styles = {
   heroImageWrap: {
     display: "flex",
     flexDirection: "column",
-    gap: "0.9rem",
-    width: 260,
+    gap: "0.6rem",
+    width: 200,
     maxWidth: "100%",
   },
   heroImageFrame: {
     position: "relative",
     border: "1px solid #d4d4d4",
     borderRadius: 4,
-    padding: 6,
+    padding: 5,
     background: "#ffffff",
   },
   heroImage: {
@@ -1307,8 +1065,8 @@ const styles = {
     position: "absolute",
     top: -1,
     left: -1,
-    width: 16,
-    height: 16,
+    width: 14,
+    height: 14,
     borderTop: `2px solid ${ACCENT}`,
     borderLeft: `2px solid ${ACCENT}`,
     borderTopLeftRadius: 4,
@@ -1317,63 +1075,28 @@ const styles = {
     position: "absolute",
     bottom: -1,
     right: -1,
-    width: 16,
-    height: 16,
+    width: 14,
+    height: 14,
     borderBottom: `2px solid ${ACCENT}`,
     borderRight: `2px solid ${ACCENT}`,
     borderBottomRightRadius: 4,
   },
-  imageBadge: {
-    position: "absolute",
-    bottom: 12,
-    right: 12,
-    fontSize: "0.6rem",
-    letterSpacing: "0.1em",
-    padding: "0.2rem 0.5rem",
-    background: "rgba(17,17,17,0.85)",
-    color: "#ffffff",
-    borderRadius: 3,
-    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-    backdropFilter: "blur(4px)",
-  },
-  heroImageMeta: { display: "flex", flexDirection: "column" },
   metaRow: {
     display: "flex",
     justifyContent: "space-between",
-    fontSize: "0.75rem",
+    fontSize: "0.7rem",
     borderTop: "1px solid #e5e5e5",
-    padding: "0.55rem 0",
+    padding: "0.45rem 0",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
   },
   metaKey: { color: "#888888" },
-  metaBullet: {
-    color: ACCENT,
-    marginRight: 6,
-    fontSize: "0.6rem",
-  },
   metaVal: { color: "#111111", fontWeight: 500 },
-
-  scrollHint: {
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-    marginTop: "3rem",
-    paddingBottom: "1.5rem",
-    fontSize: "0.7rem",
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
-    color: "#888888",
-    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-  },
-  scrollHintArrow: {
-    color: ACCENT,
-    animation: "typingBounce 1.8s ease-in-out infinite",
-  },
 
   /* ---------- TICKER ---------- */
   ticker: {
+    marginTop: "3rem",
     borderTop: "1px solid #e5e5e5",
-    padding: "1.05rem 0",
+    padding: "0.85rem 0",
     overflow: "hidden",
     whiteSpace: "nowrap",
   },
@@ -1383,48 +1106,92 @@ const styles = {
   },
   tickerGroup: { display: "inline-flex", flexShrink: 0 },
   tickerItem: {
-    fontSize: "0.9rem",
+    fontSize: "0.82rem",
     letterSpacing: "0.04em",
     color: "#444444",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-    paddingRight: "1.5rem",
+    paddingRight: "1.25rem",
     display: "inline-flex",
     alignItems: "center",
-    gap: 6,
+    gap: 5,
   },
-  tickerArrow: { color: ACCENT, fontSize: "0.85rem" },
-  tickerDot: {
+  tickerArrow: { color: ACCENT, fontSize: "0.8rem" },
+
+  /* ---------- GENERIC SECTION ---------- */
+  section: {
+    borderBottom: "1px solid #e5e5e5",
+    position: "relative",
+    zIndex: 1,
+  },
+  sectionInner: {
+    maxWidth: 960,
+    margin: "0 auto",
+    padding: "2.75rem 1.5rem",
+  },
+  sectionHead: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.6rem",
+    marginBottom: "1rem",
+  },
+  sectionNum: {
+    fontSize: "0.68rem",
+    letterSpacing: "0.08em",
     color: ACCENT,
-    fontSize: "0.5rem",
-    marginRight: 8,
-    opacity: 0.7,
+    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
+  },
+  sectionLabel: {
+    fontSize: "0.68rem",
+    letterSpacing: "0.12em",
+    textTransform: "uppercase",
+    color: "#111111",
+    margin: 0,
+    fontWeight: 600,
+  },
+  sectionTitle: {
+    fontSize: "clamp(1.4rem, 3vw, 2rem)",
+    lineHeight: 1.25,
+    fontWeight: 500,
+    letterSpacing: "-0.01em",
+    margin: "0 0 1.25rem",
+    color: "#111111",
+  },
+  twoCol: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+    gap: "1.5rem",
+  },
+  body: {
+    fontSize: "0.9rem",
+    lineHeight: 1.7,
+    color: "#444444",
+    margin: 0,
   },
 
   /* ---------- NOW ---------- */
   nowGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: "0.75rem",
-    marginTop: "1.5rem",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+    gap: "0.6rem",
   },
   nowCard: {
     display: "flex",
     flexDirection: "column",
-    gap: 4,
-    padding: "0.9rem 1rem",
+    gap: 3,
+    padding: "0.75rem 0.9rem",
     border: "1px solid #e5e5e5",
     borderRadius: 6,
     background: "#ffffff",
   },
   nowLabel: {
-    fontSize: "0.68rem",
+    fontSize: "0.62rem",
     textTransform: "uppercase",
     letterSpacing: "0.08em",
     color: "#888888",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
   },
   nowValue: {
-    fontSize: "0.88rem",
+    fontSize: "0.82rem",
     color: "#111111",
     fontWeight: 500,
   },
@@ -1432,17 +1199,17 @@ const styles = {
   /* ---------- ABOUT ---------- */
   aboutSchool: {
     display: "flex",
-    alignItems: "flex-start",
-    gap: "0.9rem",
-    marginTop: "2rem",
-    padding: "1rem",
+    alignItems: "center",
+    gap: "0.7rem",
+    marginTop: "1.5rem",
+    padding: "0.8rem",
     border: "1px solid #e5e5e5",
     borderRadius: 6,
     background: "#ffffff",
   },
   aboutSchoolLogo: {
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
     borderRadius: 4,
     overflow: "hidden",
     border: "1px solid #e5e5e5",
@@ -1453,81 +1220,17 @@ const styles = {
     flexShrink: 0,
   },
   aboutSchoolLabel: {
-    fontSize: "0.65rem",
+    fontSize: "0.6rem",
     textTransform: "uppercase",
     letterSpacing: "0.08em",
     color: "#888888",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-    marginBottom: 2,
   },
   aboutSchoolName: {
-    fontSize: "0.95rem",
+    fontSize: "0.85rem",
     fontWeight: 600,
     color: "#111111",
-  },
-  aboutSchoolDesc: {
-    fontSize: "0.82rem",
-    color: "#555555",
-    marginTop: 4,
-    lineHeight: 1.5,
-  },
-
-  /* ---------- GENERIC SECTION ---------- */
-  section: {
-    borderBottom: "1px solid #e5e5e5",
-    position: "relative",
-    zIndex: 1,
-  },
-  sectionInner: {
-    maxWidth: 1100,
-    margin: "0 auto",
-    padding: "4rem 2rem",
-  },
-  sectionHead: {
-    display: "flex",
-    alignItems: "center",
-    gap: "0.75rem",
-    marginBottom: "1.25rem",
-  },
-  sectionNum: {
-    fontSize: "0.7rem",
-    letterSpacing: "0.08em",
-    color: ACCENT,
-    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-  },
-  sectionLabel: {
-    fontSize: "0.7rem",
-    letterSpacing: "0.12em",
-    textTransform: "uppercase",
-    color: "#111111",
-    margin: 0,
-    fontWeight: 600,
-  },
-  sectionTitle: {
-    fontSize: "clamp(1.6rem, 3.4vw, 2.4rem)",
-    lineHeight: 1.2,
-    fontWeight: 500,
-    letterSpacing: "-0.015em",
-    margin: "0 0 1.5rem",
-    color: "#111111",
-  },
-  sectionDesc: {
-    fontSize: "0.95rem",
-    lineHeight: 1.7,
-    color: "#555555",
-    maxWidth: 600,
-    margin: "0 0 2rem",
-  },
-  twoCol: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-    gap: "2rem",
-  },
-  body: {
-    fontSize: "0.95rem",
-    lineHeight: 1.75,
-    color: "#444444",
-    margin: 0,
+    marginTop: 1,
   },
 
   /* ---------- PROJECTS ---------- */
@@ -1538,37 +1241,37 @@ const styles = {
   },
   projectRow: {
     display: "grid",
-    gridTemplateColumns: "40px 1fr auto",
-    gap: "1rem",
+    gridTemplateColumns: "32px 1fr auto",
+    gap: "0.75rem",
     alignItems: "start",
-    padding: "1.5rem 0",
+    padding: "1.1rem 0",
     borderBottom: "1px solid #e5e5e5",
   },
   projectNum: {
-    fontSize: "0.75rem",
+    fontSize: "0.7rem",
     color: ACCENT,
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-    paddingTop: 4,
+    paddingTop: 3,
   },
   projectBody: { minWidth: 0 },
   projectTitle: {
-    fontSize: "1.1rem",
+    fontSize: "1rem",
     fontWeight: 600,
-    margin: "0 0 0.4rem",
+    margin: "0 0 0.3rem",
     color: "#111111",
   },
   projectDesc: {
-    fontSize: "0.9rem",
-    lineHeight: 1.6,
+    fontSize: "0.85rem",
+    lineHeight: 1.55,
     color: "#555555",
     margin: 0,
   },
   projectTag: {
-    fontSize: "0.72rem",
+    fontSize: "0.65rem",
     color: "#666666",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
     border: "1px solid #d4d4d4",
-    padding: "0.3rem 0.6rem",
+    padding: "0.2rem 0.5rem",
     borderRadius: 3,
     whiteSpace: "nowrap",
     alignSelf: "start",
@@ -1582,21 +1285,21 @@ const styles = {
     zIndex: 1,
   },
   quoteInner: {
-    maxWidth: 1100,
+    maxWidth: 960,
     margin: "0 auto",
-    padding: "4.5rem 2rem",
+    padding: "3rem 1.5rem",
     textAlign: "center",
   },
   quoteText: {
-    fontSize: "clamp(1.4rem, 3vw, 2.2rem)",
-    lineHeight: 1.3,
+    fontSize: "clamp(1.2rem, 2.6vw, 1.8rem)",
+    lineHeight: 1.35,
     fontWeight: 400,
     letterSpacing: "-0.01em",
     color: "#ffffff",
-    margin: "0 0 1rem",
+    margin: "0 0 0.75rem",
   },
   quoteBy: {
-    fontSize: "0.75rem",
+    fontSize: "0.68rem",
     textTransform: "uppercase",
     letterSpacing: "0.12em",
     color: ACCENT,
@@ -1611,41 +1314,39 @@ const styles = {
     zIndex: 1,
   },
   aiInner: {
-    maxWidth: 820,
+    maxWidth: 720,
     margin: "0 auto",
-    padding: "4rem 2rem",
+    padding: "2.75rem 1.5rem",
   },
   chatCard: {
     background: "#ffffff",
     border: "1px solid #d4d4d4",
     borderRadius: 8,
-    padding: "1.25rem",
+    padding: "1rem",
     display: "flex",
     flexDirection: "column",
-    marginTop: "1rem",
+    marginTop: "0.75rem",
     position: "relative",
-    boxShadow:
-      "0 1px 0 rgba(37,99,235,0.06), 0 12px 40px -24px rgba(37,99,235,0.25)",
   },
   chatHeader: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingBottom: "0.85rem",
+    paddingBottom: "0.7rem",
     borderBottom: "1px solid #e5e5e5",
-    marginBottom: "0.85rem",
+    marginBottom: "0.7rem",
     gap: "0.5rem",
     flexWrap: "wrap",
   },
   chatHeaderLeft: {
     display: "flex",
     alignItems: "center",
-    gap: "0.6rem",
+    gap: "0.55rem",
     minWidth: 0,
   },
   chatDot: {
-    width: 8,
-    height: 8,
+    width: 7,
+    height: 7,
     borderRadius: "50%",
     background: ACCENT,
     display: "inline-block",
@@ -1653,12 +1354,12 @@ const styles = {
     animation: "pulseRing 2s infinite",
   },
   chatTitle: {
-    fontSize: "0.9rem",
+    fontSize: "0.85rem",
     fontWeight: 600,
     color: "#111111",
   },
   chatSubtitle: {
-    fontSize: "0.72rem",
+    fontSize: "0.68rem",
     color: "#777777",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
   },
@@ -1666,8 +1367,8 @@ const styles = {
     border: "1px solid #d4d4d4",
     background: "#ffffff",
     color: "#111111",
-    fontSize: "0.72rem",
-    padding: "0.3rem 0.7rem",
+    fontSize: "0.68rem",
+    padding: "0.25rem 0.6rem",
     borderRadius: 3,
     cursor: "pointer",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
@@ -1677,23 +1378,23 @@ const styles = {
   chatArea: {
     display: "flex",
     flexDirection: "column",
-    gap: "0.65rem",
-    height: "clamp(280px, 45vh, 380px)",
+    gap: "0.55rem",
+    height: "clamp(240px, 40vh, 340px)",
     overflowY: "auto",
     overflowX: "hidden",
-    padding: "0.25rem 0.1rem",
+    padding: "0.2rem 0.1rem",
     scrollBehavior: "auto",
     overscrollBehavior: "contain",
     WebkitOverflowScrolling: "touch",
   },
-  msgRow: { display: "flex", alignItems: "flex-end", gap: 6 },
+  msgRow: { display: "flex", alignItems: "flex-end", gap: 5 },
   bubbleAvatar: {
-    width: 24,
-    height: 24,
+    width: 22,
+    height: 22,
     borderRadius: "50%",
     background: "#111111",
     color: "#ffffff",
-    fontSize: "0.65rem",
+    fontSize: "0.6rem",
     fontWeight: 700,
     display: "flex",
     alignItems: "center",
@@ -1708,19 +1409,19 @@ const styles = {
     animation: "bubbleIn 0.25s ease",
   },
   bubble: {
-    padding: "0.6rem 0.9rem",
+    padding: "0.55rem 0.8rem",
     borderRadius: 8,
-    fontSize: "0.88rem",
-    lineHeight: 1.55,
+    fontSize: "0.85rem",
+    lineHeight: 1.5,
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
   },
   bubbleMeta: {
     display: "flex",
     alignItems: "center",
-    gap: 8,
+    gap: 6,
     marginTop: 3,
-    fontSize: "0.65rem",
+    fontSize: "0.6rem",
     color: "#999999",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
   },
@@ -1730,7 +1431,7 @@ const styles = {
     background: "transparent",
     color: "#999999",
     cursor: "pointer",
-    fontSize: "0.65rem",
+    fontSize: "0.6rem",
     padding: 0,
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
     textDecoration: "underline",
@@ -1746,10 +1447,10 @@ const styles = {
   },
   scrollBtn: {
     position: "absolute",
-    bottom: 12,
-    right: 12,
-    width: 32,
-    height: 32,
+    bottom: 10,
+    right: 10,
+    width: 28,
+    height: 28,
     borderRadius: "50%",
     border: `1px solid ${ACCENT_BORDER}`,
     background: "#ffffff",
@@ -1757,75 +1458,47 @@ const styles = {
     cursor: "pointer",
     fontWeight: 700,
     boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+    fontSize: "0.8rem",
   },
   suggestions: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "0.4rem",
-    margin: "0.85rem 0 0.6rem",
+    gap: "0.35rem",
+    margin: "0.7rem 0 0.5rem",
   },
   suggestionBtn: {
-    fontSize: "0.75rem",
-    padding: "0.35rem 0.7rem",
+    fontSize: "0.7rem",
+    padding: "0.3rem 0.6rem",
     borderRadius: 3,
     border: `1px solid ${ACCENT_BORDER}`,
     background: ACCENT_SOFT,
     color: ACCENT,
     cursor: "pointer",
   },
-  form: { display: "flex", gap: "0.5rem", marginTop: "0.75rem" },
+  form: { display: "flex", gap: "0.4rem", marginTop: "0.6rem" },
   input: {
     flex: 1,
     minWidth: 0,
-    padding: "0.6rem 0.8rem",
+    padding: "0.55rem 0.7rem",
     borderRadius: 4,
     border: "1px solid #d4d4d4",
-    fontSize: "0.88rem",
+    fontSize: "0.85rem",
     outline: "none",
     background: "#ffffff",
     color: "#111111",
   },
   sendBtn: {
-    padding: "0.6rem 1rem",
+    padding: "0.55rem 0.9rem",
     borderRadius: 4,
     border: `1px solid ${ACCENT}`,
     background: ACCENT,
     color: "#ffffff",
     fontWeight: 600,
-    fontSize: "0.82rem",
+    fontSize: "0.78rem",
     flexShrink: 0,
   },
 
   /* ---------- TOOLKIT ---------- */
-  toolkitGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
-    gap: "1.25rem",
-    marginTop: "1.5rem",
-  },
-  toolkitCard: {
-    border: "1px solid #d4d4d4",
-    borderRadius: 6,
-    padding: "1.25rem",
-    background: "#ffffff",
-  },
-  toolkitNum: {
-    fontSize: "0.7rem",
-    color: ACCENT,
-    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-  },
-  toolkitTitle: {
-    fontSize: "1.05rem",
-    fontWeight: 600,
-    margin: "0.5rem 0 0.4rem",
-    color: "#111111",
-  },
-  toolkitDesc: {
-    fontSize: "0.85rem",
-    lineHeight: 1.55,
-    color: "#555555",
-    margin: "0 0 0.9rem",
-  },
   tagList: {
     listStyle: "none",
     padding: 0,
@@ -1835,51 +1508,20 @@ const styles = {
     gap: "0.35rem",
   },
   tag: {
-    fontSize: "0.72rem",
+    fontSize: "0.7rem",
     padding: "0.25rem 0.55rem",
     border: "1px solid #e5e5e5",
     borderRadius: 3,
-    background: "#fafafa",
+    background: "#ffffff",
     color: "#333333",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-  },
-
-  /* ---------- PRINCIPLES ---------- */
-  principlesGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-    gap: "1rem",
-    marginTop: "1.5rem",
-  },
-  principleCard: {
-    border: "1px solid #e5e5e5",
-    borderRadius: 6,
-    padding: "1.25rem",
-    background: "#ffffff",
-  },
-  principleNum: {
-    fontSize: "0.72rem",
-    color: ACCENT,
-    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-  },
-  principleTitle: {
-    fontSize: "1.05rem",
-    fontWeight: 600,
-    margin: "0.5rem 0 0.4rem",
-    color: "#111111",
-  },
-  principleDesc: {
-    fontSize: "0.85rem",
-    lineHeight: 1.55,
-    color: "#555555",
-    margin: 0,
   },
 
   /* ---------- CONTACT ---------- */
   contactList: {
     listStyle: "none",
     padding: 0,
-    margin: "1.5rem 0 0",
+    margin: "1rem 0 0",
     borderTop: "1px solid #e5e5e5",
   },
   contactItem: {
@@ -1887,19 +1529,19 @@ const styles = {
     flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: "0.5rem",
-    padding: "1rem 0",
+    gap: "0.4rem",
+    padding: "0.8rem 0",
     borderBottom: "1px solid #e5e5e5",
   },
   contactKey: {
-    fontSize: "0.75rem",
+    fontSize: "0.7rem",
     textTransform: "uppercase",
     letterSpacing: "0.08em",
     color: "#888888",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
   },
   contactLink: {
-    fontSize: "0.9rem",
+    fontSize: "0.85rem",
     color: "#111111",
     textDecoration: "underline",
     textUnderlineOffset: 3,
@@ -1914,54 +1556,12 @@ const styles = {
     background: "#fafafa",
   },
   footerInner: {
-    maxWidth: 1100,
+    maxWidth: 960,
     margin: "0 auto",
-    padding: "3rem 2rem 2rem",
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "2rem",
-    borderBottom: "1px solid #e5e5e5",
-  },
-  footerCol: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.5rem",
-  },
-  footerBrand: {
-    display: "flex",
-    alignItems: "center",
-    gap: "0.6rem",
-    marginBottom: "0.5rem",
-  },
-  footerTagline: {
-    fontSize: "0.82rem",
-    color: "#666666",
-    lineHeight: 1.6,
-    margin: 0,
-    maxWidth: 260,
-  },
-  footerHeading: {
-    fontSize: "0.68rem",
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
-    color: "#888888",
-    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
-    marginBottom: "0.25rem",
-  },
-  footerLink: {
-    fontSize: "0.85rem",
-    color: "#111111",
-    textDecoration: "none",
-    width: "fit-content",
-    transition: "color 0.2s",
-  },
-  footerBottom: {
-    maxWidth: 1100,
-    margin: "0 auto",
-    padding: "1.25rem 2rem",
+    padding: "1.25rem 1.5rem",
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    gap: "0.5rem",
+    gap: "0.4rem",
   },
 };

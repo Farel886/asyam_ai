@@ -1,4 +1,9 @@
 import { NextResponse } from "next/server";
+import { formatAsyamDataForPrompt } from "@/data/asyam";
+
+const GEMINI_MODEL = "gemini-3.5-flash-lite";
+const MAX_RETRIES = 4;
+const INITIAL_DELAY = 1000;
 
 const SYSTEM_PROMPT = `Kamu adalah "Asyam AI" — representasi digital dari Asyam Farrel Dzakwan, seorang student developer & AI enthusiast asal Indonesia.
 
@@ -32,22 +37,10 @@ ATURAN PENTING LAINNYA:
 - Jawaban singkat dan padat. Maksimal sekitar 4-6 kalimat, kecuali user minta penjelasan panjang.
 - JANGAN gunakan markdown formatting seperti bold, italic, code, heading, atau strikethrough. Tulis jawaban sebagai teks polos.
 
-DATA ASYAM:
-- Nama lengkap: Asyam Farrel Dzakwan
-- Role: Student developer & AI enthusiast
-- Sekolah: SMP Negeri 3 Cepu
-- Skill: JavaScript, React, Next.js, Node.js, Python, Gemini API
-- Project: Asyam AI Portfolio (website ini)
-- Email: farrelanakpintar@gmail.com
-- GitHub: github.com/Farel886
-- TikTok: @oscarlevha
+DATA ASYAM (sumber kebenaran — jangan mengarang di luar ini):
+${formatAsyamDataForPrompt()}
 
 Tujuanmu: menjadi "wajah" Asyam di websitenya — ramah, bisa ditanya apa saja dalam bahasa apa saja, tapi tetap terasa seperti Asyam AI.`;
-
-const GEMINI_MODEL = "gemini-3.5-flash-lite";
-
-const MAX_RETRIES = 4;
-const INITIAL_DELAY = 1000;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -96,7 +89,7 @@ export async function POST(req) {
             },
             contents,
             generationConfig: {
-              maxOutputTokens: 800,
+              maxOutputTokens: 500,
             },
           }),
         });
@@ -119,7 +112,8 @@ export async function POST(req) {
           console.warn(`Error ${status} (sementara). Akan dicoba lagi...`);
 
           if (attempt < MAX_RETRIES) {
-            const delay = INITIAL_DELAY * Math.pow(2, attempt - 1) + Math.random() * 500;
+            const delay =
+              INITIAL_DELAY * Math.pow(2, attempt - 1) + Math.random() * 500;
             console.log(`Menunggu ${Math.round(delay)}ms...`);
             await sleep(delay);
             continue;
@@ -134,13 +128,13 @@ export async function POST(req) {
           { error: "Gagal menghubungi AI.", detail: errBody, status },
           { status: 500 }
         );
-
       } catch (fetchErr) {
         console.error(`Fetch error (percobaan ${attempt}):`, fetchErr);
         lastError = { status: 0, body: String(fetchErr) };
 
         if (attempt < MAX_RETRIES) {
-          const delay = INITIAL_DELAY * Math.pow(2, attempt - 1) + Math.random() * 500;
+          const delay =
+            INITIAL_DELAY * Math.pow(2, attempt - 1) + Math.random() * 500;
           console.log(`Menunggu ${Math.round(delay)}ms...`);
           await sleep(delay);
         }
@@ -157,8 +151,7 @@ export async function POST(req) {
       },
       { status: 503 }
     );
-
-  } catch (error) {
+} catch (error) {
     console.error("Server error:", error);
     return NextResponse.json(
       { error: "Terjadi kesalahan server.", detail: String(error) },
