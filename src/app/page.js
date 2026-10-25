@@ -58,7 +58,6 @@ const PRINCIPLES = [
   { num: "04", title: "Improve steadily", desc: "Use feedback to get better over time." },
 ];
 
-// Hapus tanda markdown supaya bubble chat tetap bersih
 function stripMarkdown(text) {
   if (!text) return "";
   return text
@@ -98,12 +97,13 @@ export default function Home() {
   const [time, setTime] = useState("--:--");
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const chatAreaRef = useRef(null);
   const inputRef = useRef(null);
   const mounted = useRef(false);
   const copyTimer = useRef(null);
 
-  // Auto-scroll HANYA di dalam chat container
+  // Auto-scroll HANYA di dalam chat container — pakai "auto" di mobile
   useEffect(() => {
     if (!mounted.current) {
       mounted.current = true;
@@ -112,7 +112,7 @@ export default function Home() {
     const el = chatAreaRef.current;
     if (!el) return;
     const raf = requestAnimationFrame(() => {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+      el.scrollTo({ top: el.scrollHeight, behavior: "auto" });
     });
     return () => cancelAnimationFrame(raf);
   }, [messages, loading]);
@@ -142,6 +142,16 @@ export default function Home() {
   useEffect(() => {
     if (!loading) inputRef.current?.focus({ preventScroll: true });
   }, [loading]);
+
+  // Deteksi scroll untuk header shadow
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 20);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Scroll reveal
   useEffect(() => {
@@ -178,7 +188,6 @@ export default function Home() {
     };
   }, []);
 
-  // Deteksi user scroll ke atas
   function handleChatScroll() {
     const el = chatAreaRef.current;
     if (!el) return;
@@ -190,7 +199,7 @@ export default function Home() {
   function scrollToBottom() {
     const el = chatAreaRef.current;
     if (!el) return;
-    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    el.scrollTo({ top: el.scrollHeight, behavior: "auto" });
     setShowScrollBtn(false);
   }
 
@@ -282,30 +291,68 @@ export default function Home() {
       <div style={styles.gridBg} aria-hidden="true" />
 
       {/* ================= HEADER ================= */}
-      <header style={styles.header}>
+      <header
+        style={{
+          ...styles.header,
+          borderBottomColor: scrolled ? "#d4d4d4" : "#e5e5e5",
+          boxShadow: scrolled
+            ? "0 1px 0 rgba(0,0,0,0.03), 0 8px 24px -20px rgba(0,0,0,0.15)"
+            : "none",
+        }}
+      >
         <div style={styles.brand}>
           <span style={styles.brandMark}>A</span>
           <span style={styles.brandName}>asyam.f</span>
         </div>
+        <nav style={styles.nav} className="nav" aria-label="Main navigation">
+          <a href="#work" style={styles.navLink}>
+            Work
+          </a>
+          <a href="#ai" style={styles.navLink}>
+            Asyam AI
+          </a>
+          <a href="#contact" style={styles.navLink}>
+            Contact
+          </a>
+        </nav>
         <div style={styles.headerRight}>
           <span style={styles.statusPulse} />
-          <span style={styles.headerMono}>Available for collaboration</span>
+          <span style={styles.headerMono}>Available</span>
         </div>
       </header>
 
       {/* ================= HERO ================= */}
       <section style={styles.hero}>
-        <div style={styles.heroInner}>
-          <div style={styles.heroGrid}>
+        <div style={styles.heroInner} className="hero-inner">
+          <div style={styles.heroGrid} className="hero-grid">
             <div style={styles.heroText}>
               <p style={styles.eyebrow}>
+                <span style={styles.eyebrowDot} />
                 <span style={styles.eyebrowLine} />
                 Student developer · Indonesia
               </p>
               <h1 style={styles.heroTitle}>
                 Building things
                 <br />
-                that <span style={styles.accentText}>matter</span>.
+                that{" "}
+                <span style={styles.accentWrap}>
+                  matter
+                  <svg
+                    style={styles.underline}
+                    viewBox="0 0 120 8"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 6 Q 30 1, 60 4 T 118 3"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      fill="none"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
+                .
               </h1>
               <p style={styles.heroDesc}>
                 I'm Asyam — I turn curiosity into experiments, projects, and
@@ -330,7 +377,11 @@ export default function Home() {
               </div>
 
               <div style={styles.heroActions}>
-                <a href="#ai" style={styles.primaryBtn} className="primary-btn">
+                <a
+                  href="#ai"
+                  style={styles.primaryBtn}
+                  className="primary-btn"
+                >
                   Try Asyam AI <span style={styles.btnArrow}>↓</span>
                 </a>
                 <a
@@ -343,7 +394,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div style={styles.heroImageWrap}>
+            <div style={styles.heroImageWrap} className="hero-image-wrap">
               <div style={styles.heroImageFrame}>
                 <Image
                   src="/images/asyam.png"
@@ -356,24 +407,36 @@ export default function Home() {
                 />
                 <span style={styles.cornerTL} />
                 <span style={styles.cornerBR} />
+                <span style={styles.imageBadge}>ASYAM · 2025</span>
               </div>
               <div style={styles.heroImageMeta}>
                 <div style={styles.metaRow}>
-                  <span style={styles.metaKey}>Projects</span>
+                  <span style={styles.metaKey}>
+                    <span style={styles.metaBullet}>●</span> Projects
+                  </span>
                   <span style={styles.metaVal}>03</span>
                 </div>
                 <div style={styles.metaRow}>
-                  <span style={styles.metaKey}>Learning</span>
+                  <span style={styles.metaKey}>
+                    <span style={styles.metaBullet}>○</span> Learning
+                  </span>
                   <span style={styles.metaVal}>Python</span>
                 </div>
                 <div style={styles.metaRow}>
-                  <span style={styles.metaKey}>Jakarta</span>
+                  <span style={styles.metaKey}>
+                    <span style={styles.metaBullet}>◐</span> Jakarta
+                  </span>
                   <span style={{ ...styles.metaVal, color: ACCENT }}>
                     {time}
                   </span>
                 </div>
               </div>
             </div>
+          </div>
+
+          <div style={styles.scrollHint} aria-hidden="true">
+            <span>Scroll</span>
+            <span style={styles.scrollHintArrow}>↓</span>
           </div>
         </div>
 
@@ -383,6 +446,7 @@ export default function Home() {
               <div key={dup} style={styles.tickerGroup}>
                 {TICKER_ITEMS.map((item, i) => (
                   <span key={`${dup}-${i}`} style={styles.tickerItem}>
+                    <span style={styles.tickerDot}>●</span>
                     {item}
                     <span style={styles.tickerArrow}>↗</span>
                   </span>
@@ -395,7 +459,7 @@ export default function Home() {
 
       {/* ================= 00 NOW ================= */}
       <section style={styles.section}>
-        <div style={styles.sectionInner} data-reveal>
+        <div style={styles.sectionInner} className="section-inner" data-reveal>
           <div style={styles.sectionHead}>
             <span style={styles.sectionNum}>00</span>
             <h2 style={styles.sectionLabel}>Now</h2>
@@ -414,7 +478,7 @@ export default function Home() {
 
       {/* ================= 01 ABOUT ================= */}
       <section style={styles.section}>
-        <div style={styles.sectionInner} data-reveal>
+        <div style={styles.sectionInner} className="section-inner" data-reveal>
           <div style={styles.sectionHead}>
             <span style={styles.sectionNum}>01</span>
             <h2 style={styles.sectionLabel}>About</h2>
@@ -460,8 +524,8 @@ export default function Home() {
       </section>
 
       {/* ================= 02 WORK ================= */}
-      <section style={styles.section}>
-        <div style={styles.sectionInner} data-reveal>
+      <section id="work" style={styles.section}>
+        <div style={styles.sectionInner} className="section-inner" data-reveal>
           <div style={styles.sectionHead}>
             <span style={styles.sectionNum}>02</span>
             <h2 style={styles.sectionLabel}>Selected work</h2>
@@ -549,6 +613,7 @@ export default function Home() {
               <div
                 ref={chatAreaRef}
                 style={styles.chatArea}
+                className="chat-area"
                 role="log"
                 aria-live="polite"
                 aria-label="Conversation with Asyam AI"
@@ -707,7 +772,7 @@ export default function Home() {
 
       {/* ================= 04 TOOLKIT ================= */}
       <section style={styles.section}>
-        <div style={styles.sectionInner} data-reveal>
+        <div style={styles.sectionInner} className="section-inner" data-reveal>
           <div style={styles.sectionHead}>
             <span style={styles.sectionNum}>04</span>
             <h2 style={styles.sectionLabel}>Toolkit</h2>
@@ -762,7 +827,7 @@ export default function Home() {
 
       {/* ================= 05 PRINCIPLES ================= */}
       <section style={styles.section}>
-        <div style={styles.sectionInner} data-reveal>
+        <div style={styles.sectionInner} className="section-inner" data-reveal>
           <div style={styles.sectionHead}>
             <span style={styles.sectionNum}>05</span>
             <h2 style={styles.sectionLabel}>Principles</h2>
@@ -787,7 +852,7 @@ export default function Home() {
 
       {/* ================= 06 CONTACT ================= */}
       <section id="contact" style={styles.section}>
-        <div style={styles.sectionInner} data-reveal>
+        <div style={styles.sectionInner} className="section-inner" data-reveal>
           <div style={styles.sectionHead}>
             <span style={styles.sectionNum}>06</span>
             <h2 style={styles.sectionLabel}>Contact</h2>
@@ -926,7 +991,8 @@ export default function Home() {
         :global(html) { scroll-behavior: smooth; }
         :global(*) { box-sizing: border-box; }
         :global(#ai),
-        :global(#contact) { scroll-margin-top: 80px; }
+        :global(#contact),
+        :global(#work) { scroll-margin-top: 80px; }
 
         :global(.project-row) { transition: background 0.2s; }
         :global(.project-row:hover) { background: rgba(37,99,235,0.03); }
@@ -945,8 +1011,41 @@ export default function Home() {
         :global(.secondary-btn:hover) { border-color: #2563eb !important; }
 
         @media (max-width: 720px) {
-          :global(h1) { font-size: 2.2rem !important; }
-          :global(h3) { font-size: 1.4rem !important; }
+          :global(h1) { font-size: 2rem !important; }
+          :global(h3) { font-size: 1.3rem !important; }
+
+          /* Hero jadi 1 kolom, foto di bawah teks */
+          :global(.hero-grid) {
+            grid-template-columns: 1fr !important;
+            gap: 2rem !important;
+          }
+          :global(.hero-image-wrap) {
+            width: 100% !important;
+            max-width: 280px !important;
+            margin: 0 auto !important;
+            order: 0;
+          }
+          :global(.nav) { display: none !important; }
+
+          /* Chat: tinggi lebih kecil & scroll internal */
+          :global(.chat-area) {
+            height: 50vh !important;
+            max-height: 340px !important;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+          }
+
+          /* Matikan smooth scroll global di HP (biar tidak "loncat") */
+          :global(html) {
+            scroll-behavior: auto !important;
+          }
+
+          /* Section padding lebih kecil */
+          :global(.section-inner) { padding: 2.5rem 1.25rem !important; }
+          :global(.hero-inner) { padding: 2.5rem 1.25rem 0 !important; }
+
+          /* Input 16px biar iOS tidak zoom */
+          :global(input) { font-size: 16px !important; }
         }
         @media (prefers-reduced-motion: reduce) {
           :global(*),
@@ -968,6 +1067,7 @@ const styles = {
     background: "#fafafa",
     color: "#111111",
     position: "relative",
+    overflowX: "hidden",
   },
   gridBg: {
     position: "fixed",
@@ -993,6 +1093,8 @@ const styles = {
     backdropFilter: "blur(10px)",
     WebkitBackdropFilter: "blur(10px)",
     zIndex: 10,
+    transition: "border-color 0.2s, box-shadow 0.2s",
+    gap: "1rem",
   },
   brand: { display: "flex", alignItems: "center", gap: "0.6rem" },
   brandMark: {
@@ -1013,7 +1115,14 @@ const styles = {
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
     color: "#111111",
   },
-  headerRight: { display: "flex", alignItems: "center", gap: 10 },
+  nav: { display: "flex", alignItems: "center", gap: "1.25rem" },
+  navLink: {
+    fontSize: "0.78rem",
+    color: "#555555",
+    textDecoration: "none",
+    letterSpacing: "0.02em",
+  },
+  headerRight: { display: "flex", alignItems: "center", gap: 8 },
   statusPulse: {
     width: 8,
     height: 8,
@@ -1021,6 +1130,7 @@ const styles = {
     background: ACCENT,
     display: "inline-block",
     animation: "pulseRing 2s infinite",
+    flexShrink: 0,
   },
   headerMono: {
     fontSize: "0.7rem",
@@ -1028,6 +1138,7 @@ const styles = {
     textTransform: "uppercase",
     color: "#555555",
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
+    whiteSpace: "nowrap",
   },
 
   /* ---------- HERO ---------- */
@@ -1054,6 +1165,15 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "0.5rem",
+    flexWrap: "wrap",
+  },
+  eyebrowDot: {
+    width: 6,
+    height: 6,
+    borderRadius: "50%",
+    background: ACCENT,
+    display: "inline-block",
+    animation: "pulseRing 2s infinite",
   },
   eyebrowLine: {
     display: "inline-block",
@@ -1070,6 +1190,22 @@ const styles = {
     color: "#111111",
   },
   accentText: { color: ACCENT },
+  accentWrap: {
+    position: "relative",
+    display: "inline-block",
+    color: ACCENT,
+  },
+  underline: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: "-0.05em",
+    width: "100%",
+    height: "0.18em",
+    color: ACCENT,
+    opacity: 0.6,
+    pointerEvents: "none",
+  },
   heroDesc: {
     fontSize: "1rem",
     lineHeight: 1.7,
@@ -1187,6 +1323,19 @@ const styles = {
     borderRight: `2px solid ${ACCENT}`,
     borderBottomRightRadius: 4,
   },
+  imageBadge: {
+    position: "absolute",
+    bottom: 12,
+    right: 12,
+    fontSize: "0.6rem",
+    letterSpacing: "0.1em",
+    padding: "0.2rem 0.5rem",
+    background: "rgba(17,17,17,0.85)",
+    color: "#ffffff",
+    borderRadius: 3,
+    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
+    backdropFilter: "blur(4px)",
+  },
   heroImageMeta: { display: "flex", flexDirection: "column" },
   metaRow: {
     display: "flex",
@@ -1197,11 +1346,32 @@ const styles = {
     fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
   },
   metaKey: { color: "#888888" },
+  metaBullet: {
+    color: ACCENT,
+    marginRight: 6,
+    fontSize: "0.6rem",
+  },
   metaVal: { color: "#111111", fontWeight: 500 },
+
+  scrollHint: {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    marginTop: "3rem",
+    paddingBottom: "1.5rem",
+    fontSize: "0.7rem",
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    color: "#888888",
+    fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace',
+  },
+  scrollHintArrow: {
+    color: ACCENT,
+    animation: "typingBounce 1.8s ease-in-out infinite",
+  },
 
   /* ---------- TICKER ---------- */
   ticker: {
-    marginTop: "4rem",
     borderTop: "1px solid #e5e5e5",
     padding: "1.05rem 0",
     overflow: "hidden",
@@ -1223,6 +1393,12 @@ const styles = {
     gap: 6,
   },
   tickerArrow: { color: ACCENT, fontSize: "0.85rem" },
+  tickerDot: {
+    color: ACCENT,
+    fontSize: "0.5rem",
+    marginRight: 8,
+    opacity: 0.7,
+  },
 
   /* ---------- NOW ---------- */
   nowGrid: {
@@ -1506,7 +1682,9 @@ const styles = {
     overflowY: "auto",
     overflowX: "hidden",
     padding: "0.25rem 0.1rem",
-    scrollBehavior: "smooth",
+    scrollBehavior: "auto",
+    overscrollBehavior: "contain",
+    WebkitOverflowScrolling: "touch",
   },
   msgRow: { display: "flex", alignItems: "flex-end", gap: 6 },
   bubbleAvatar: {
